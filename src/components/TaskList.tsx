@@ -14,16 +14,34 @@ export function TaskList() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [newTaskTitle, setNewTaskTitle] = useState('');
 
+  // Crie uma nova task com um id random, não permita criar caso o título seja vazio.
   function handleCreateNewTask() {
-    // Crie uma nova task com um id random, não permita criar caso o título seja vazio.
+    if(!newTaskTitle) return                      // Verifica se o Título não está vazio
+
+    const newTask = {                             // Cria um nova Task
+      id: Math.random(),                          // Gera um Id aleatório
+      title: newTaskTitle,                        // Pega o valor do Input e atribui a Props Title
+      isComplete: false                           // Inicia a Task como não concluída
+    }
+
+    setTasks(oldState => [...oldState, newTask])  // Atualiza o antigo State das Tasks e Adiciona a nova Task
+    setNewTaskTitle('')                           // Deixa o Input vazio
   }
 
+  // Altere entre `true` ou `false` o campo `isComplete` de uma task com dado ID
   function handleToggleTaskCompletion(id: number) {
-    // Altere entre `true` ou `false` o campo `isComplete` de uma task com dado ID
+    const newTasks = tasks.map(tasks => tasks.id == id ? {  // Percorre as Tasks procurando a com o ID informado e entra no IF 
+      ...tasks,                                             // Cria um novo Array com as Tasks anteriores 
+      isComplete: !tasks.isComplete                         // Inverte o valor do valor isComplete
+    } : tasks)                                              // Retorna as Tasks já cadastradas caso o ID não foi encontrado
+
+    setTasks(newTasks)                                      // Cria uma nova instância com as atualizações 
   }
 
+  // Remova uma task da listagem pelo ID
   function handleRemoveTask(id: number) {
-    // Remova uma task da listagem pelo ID
+    const filteredTasks = tasks.filter(tasks => tasks.id != id) // Faz um Filtro e cria um novo Array com as Tasks com ID diferente informado
+    setTasks(filteredTasks)                                     // Cria uma nova instância com as atualizações 
   }
 
   return (
